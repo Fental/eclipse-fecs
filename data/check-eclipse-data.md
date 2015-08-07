@@ -17,3 +17,6 @@
 [IBM 使用标记、注释和修饰符](http://www.ibm.com/developerworks/cn/opensource/tutorials/os-eclipse-plugin-guide/)
 
 
+## 参考书籍
+
+eclipse插件开发原书第三版
