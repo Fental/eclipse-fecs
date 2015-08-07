@@ -5,9 +5,9 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            id="com.eclipsesource.jshint.ui.properties.projectPropertyPage"
-            class="com.eclipsesource.jshint.ui.internal.preferences.ui.ProjectPropertyPage"
-            name="JSHint">
+            id="com.eclipsesource.fecs.ui.properties.projectPropertyPage"
+            class="com.eclipsesource.fecs.ui.internal.preferences.ui.ProjectPropertyPage"
+            name="Fecs">
          <enabledWhen>
             <adapt
                   type="org.eclipse.core.resources.IResource">
@@ -18,9 +18,9 @@
          </enabledWhen>
       </page>
       <page
-            id="com.eclipsesource.jshint.ui.properties.configPropertyPage"
-            category="com.eclipsesource.jshint.ui.properties.projectPropertyPage"
-            class="com.eclipsesource.jshint.ui.internal.preferences.ui.ConfigPropertyPage"
+            id="com.eclipsesource.fecs.ui.properties.configPropertyPage"
+            category="com.eclipsesource.fecs.ui.properties.projectPropertyPage"
+            class="com.eclipsesource.fecs.ui.internal.preferences.ui.ConfigPropertyPage"
             name="Configuration">
          <enabledWhen>
             <adapt
@@ -35,20 +35,20 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            id="com.eclipsesource.jshint.ui.mainPreferencePage"
-            class="com.eclipsesource.jshint.ui.internal.preferences.ui.JSHintPreferencePage"
-            name="JSHint">
+            id="com.eclipsesource.fecs.ui.mainPreferencePage"
+            class="com.eclipsesource.fecs.ui.internal.preferences.ui.FecsPreferencePage"
+            name="Fecs">
       </page>
       <page
-            id="com.eclipsesource.jshint.ui.configPreferencePage"
-            category="com.eclipsesource.jshint.ui.mainPreferencePage"
-            class="com.eclipsesource.jshint.ui.internal.preferences.ui.ConfigPreferencePage"
+            id="com.eclipsesource.fecs.ui.configPreferencePage"
+            category="com.eclipsesource.fecs.ui.mainPreferencePage"
+            class="com.eclipsesource.fecs.ui.internal.preferences.ui.ConfigPreferencePage"
             name="Configuration">
       </page>
    </extension>
    <extension
          id="builder"
-         name="JSHint Problem Checker"
+         name="Fecs Problem Checker"
          point="org.eclipse.core.resources.builders">
       <builder
             callOnEmptyDelta="false"
@@ -56,13 +56,13 @@
             isConfigurable="false"
             supportsConfigurations="false">
          <run
-               class="com.eclipsesource.jshint.ui.internal.builder.JSHintBuilder">
+               class="com.eclipsesource.fecs.ui.internal.builder.FecsBuilder">
          </run>
       </builder>
    </extension>
    <extension
          id="problemmarker"
-         name="JSHint Problem"
+         name="Fecs Problem"
          point="org.eclipse.core.resources.markers">
       <persistent
             value="true">
