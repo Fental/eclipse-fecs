@@ -1,1 +1,10 @@
+bin/
+target/
+
+# mac
 .DS_Store
+bundles/.DS_Store
+bundles/com.eclipsesource.jshint.ui/.DS_Store
+bundles/com.eclipsesource.jshint.ui/src/.DS_Store
+bundles/com.eclipsesource.jshint.ui/src/com/.DS_Store
+bundles/com.eclipsesource.jshint.ui/src/com/eclipsesource/.DS_Store
