@@ -8,11 +8,10 @@
  * Contributors:
  *    huangfengtao - initial implementation and API
  ******************************************************************************/
-package com.eclipsesource.fecs.ui.internal.builder;
+package com.eclipsesource.fecs;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
@@ -23,35 +22,90 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.fecs.Problem;
-import com.eclipsesource.fecs.ProblemHandler;
-import com.eclipsesource.fecs.Text;
 import com.eclipsesource.fecs.internal.ProblemImpl;
 
-public class Checker {
+// 这个类应该叫做Fecs比较合适一些
+// 包含的函数：check，format，parseConfig
+// 现在实现了check，format
+
+// 继续改进的地方：
+// TODO
+// 1 看看ignore选项能不能用
+
+// => check和format的ignore可以通过property页面来更改
+
+// 2 增加全局format功能，怎么增加全局format功能，在菜单栏和工具栏上面多增加一个command，然后bind一个快捷键，写一个handle
+
+// => format可格式化选中的内容，只可选中一项（多选会默认取选中的第一项），如果选中project和folder，其内部文件（被过滤的除外），均会被format
+
+// 3 工具栏的图标=。=
+
+// => 暂时无所谓吧
+
+// 4 parseConfig 还需要考虑一下，得有个地方来选择node路径！！！
+//   check的cli options 有color——no
+//						 debug——no
+//						 format--no		内置--format json
+//						 ignore——no		通过property page设置过滤
+//						 lookup——...	待考核
+//						 maxerr——yes
+//						 maxsize——yes
+//						 reporter——no	内置——baidu
+//						 rule——no		内置——rule true
+//						 silent——no		内置——silent false
+//						 stream——no
+//						 type——no		
+
+//   format的cli options 有debug——no
+//						  format——no
+//						  ignore——no	通过property page设置过滤
+//						  lookup——..	待考核
+//						  output——no	不能选中output路径
+//   					  replace——no	内置
+//						  safe——yes
+//						  silent——no	
+//						  stream——no
+//						  type——no
+// 综上，需要的options最多只有五个。。。。
+
+//						  
+// => =.=
+
+public class Fecs {
 	public String check(IFile resource, Text code, ProblemHandler handler) throws InterruptedException {
 		try {
+			// 获取文件的路径
 			IPath path = resource.getRawLocation();
 			String text = "";
 			text += path;
-			String[] command = new String[] { "/bin/zsh", "-c",
-					"/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs " + text
-							+ " --reporter baidu --rule true --sort true --silent true --format json"
-					// + " --silent true --format xml"
+			
+			// TODO
+			// 命令行，这里存在一个问题需要修复，就是bin fecs的脚本路径
+			String[] command = new String[] {
+				"/bin/zsh",
+				"-c",
+				"/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs "
+				+ text
+				+ " --reporter baidu --rule true --sort true --silent true --format json"
 			};
-			// String[] command = new String[]{"/bin/zsh", "-c", "which npm"};
+			
+			// 执行命令行
 			Process process = Runtime.getRuntime().exec(command);
 			process.waitFor();
-			// 为什么fecs输出的东西显示不出来
+			
+			// 获取控制台输出
 			BufferedReader br = new BufferedReader(
-					new InputStreamReader(process.getInputStream(), Charset.forName("utf-8")));
+				new InputStreamReader(process.getInputStream(), Charset.forName("utf-8"))
+			);
+			
+			// 将输出存入result中
 			String result = "";
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				result += line;
-				// System.out.println(line);
 			}
 
+			// 
 			handleProblems(handler, code, result);
 			return result;
 
@@ -62,33 +116,23 @@ public class Checker {
 	}
 
 	private void handleProblems(ProblemHandler handler, Text text, String result) {
-		// NativeArray errors = (NativeArray)jshint.get( "errors", jshint );
-		// long length = errors.getLength();
-		//
-		// for( int i = 0; i < length; i++ ) {
-		// Object object = errors.get( i, errors );
-		// ScriptableObject error = (ScriptableObject)object;
-		// if( error != null ) {
-		// Problem problem = createProblem( error, text );
-		// handler.handleProblem( problem );
-		// }
-		// }
+		// 提取fecs返回的JSON
 		JsonArray json = JsonArray.readFrom(result);
 		JsonArray errors = null;
 		if (!json.isEmpty()) {
+			// 获取当前文件的全部错误信息
 			errors = (JsonArray) (((JsonObject) json.get(0)).get("errors"));
 			int length = errors.size();
-			System.out.println(length);
 			for (int i = 0; i < length; i++) {
+				// 获取单条错误信息
 				JsonObject error = (JsonObject) errors.get(i);
-				// System.out.println(error);
 				if (error != null) {
+					// 将单条错误信息转化为错误标记模板
 					Problem problem = createProblem(error, text);
-					// System.out.println("fuck");
+					// 标记错误信息
 					handler.handleProblem(problem);
 				}
 			}
-			System.out.println(errors);
 		}
 	}
 
@@ -140,32 +184,17 @@ public class Checker {
 			String text = "";
 			text += path;
 			String[] command = new String[] { "/bin/zsh", "-c",
-					"/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs check " + text
-					// + " --replace true"
-			};
+					"/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs format " + text + " --replace true" };
 			// String[] command = new String[]{"/bin/zsh", "-c", "which npm"};
 			Process process = Runtime.getRuntime().exec(command);
 			process.waitFor();
-//			Process or = process.getInputStream();
+
+			// 强制editor刷新文件
 			try {
-				resource.setContents(process.getInputStream(), true, false, monitor);
+				resource.refreshLocal(resource.DEPTH_ONE, monitor);
 			} catch (CoreException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			// 为什么fecs输出的东西显示不出来
-//			BufferedReader br = new BufferedReader(
-//					new InputStreamReader(process.getInputStream(), Charset.forName("utf-8")));
-//			String result = "";
-//			String line = null;
-//			while ((line = br.readLine()) != null) {
-//				result += line;
-//				// System.out.println(line);
-//			}
-//
-//			handleProblems(handler, code, result);
-//			return result;
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

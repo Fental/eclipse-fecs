@@ -32,10 +32,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.osgi.service.prefs.Preferences;
 
+import com.eclipsesource.fecs.Fecs;
 import com.eclipsesource.fecs.ProblemHandler;
 import com.eclipsesource.fecs.Text;
 import com.eclipsesource.fecs.ui.internal.Activator;
-import com.eclipsesource.fecs.ui.internal.builder.Checker;
 import com.eclipsesource.fecs.ui.internal.builder.FecsBuilder.CoreExceptionWrapper;
 import com.eclipsesource.fecs.ui.internal.preferences.EnablementPreferences;
 import com.eclipsesource.fecs.ui.internal.preferences.FecsPreferences;
@@ -47,7 +47,7 @@ import com.eclipsesource.fecs.ui.internal.preferences.ResourceSelector;
 class FecsBuilderVisitor implements IResourceVisitor, IResourceDeltaVisitor {
 
 	// private final JSHint checker;
-	private final Checker checker;
+	private final Fecs fecs;
 
 	// 这个留着，可以用
 	private final ResourceSelector selector;
@@ -58,7 +58,7 @@ class FecsBuilderVisitor implements IResourceVisitor, IResourceDeltaVisitor {
 		Preferences node = PreferencesFactory.getProjectPreferences(project);
 		new EnablementPreferences(node);
 		selector = new ResourceSelector(project);
-		checker = selector.allowVisitProject() ? new Checker() : null;
+		fecs = selector.allowVisitProject() ? new Fecs() : null;
 		this.monitor = monitor;
 	}
 
@@ -111,8 +111,8 @@ class FecsBuilderVisitor implements IResourceVisitor, IResourceDeltaVisitor {
 		try {
 
 			try {
-				 checker.format(file, monitor);
-//				checker.check(file, code, handler);
+//				 fecs.format(file, monitor);
+				fecs.check(file, code, handler);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

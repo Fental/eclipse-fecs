@@ -74,5 +74,97 @@
             type="org.eclipse.core.resources.textmarker">
       </super>
    </extension>
+   
+   <!--扩展命令-->
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="com.eclipsesource.fecs.ui.commands.category"
+            name="Fecs Formatter">
+      </category>
+      <!--格式化单个文件-->
+      <command
+            categoryId="com.eclipsesource.fecs.ui.commands.category"
+            id="com.eclipsesource.fecs.ui.commands.formatFileCommand"
+            name="Format This File">
+      </command>
+      <command
+            categoryId="com.eclipsesource.fecs.ui.commands.category"
+            id="com.eclipsesource.fecs.ui.commands.formatAllFilesCommand"
+            name="Format All Files">
+      </command>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.handlers">
+         <!--将handler与command绑定-->
+      <handler
+            class="com.eclipsesource.fecs.ui.internal.handlers.FormatFileHandler"
+            commandId="com.eclipsesource.fecs.ui.commands.formatFileCommand">
+      </handler>
+      <handler
+            class="com.eclipsesource.fecs.ui.internal.handlers.FormatAllFilesHandler"
+            commandId="com.eclipsesource.fecs.ui.commands.formatAllFilesCommand">
+      </handler>
+   </extension>
+   
+   <!--绑定快捷键-->
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.eclipsesource.fecs.ui.commands.formatFileCommand"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+6">
+      </key>
+   </extension>
+   
+   <!--扩展菜单栏和工具栏-->
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="com.eclipsesource.fecs.ui.menus.sampleMenu"
+               label="Fecs Formatter"
+               mnemonic="M">
+            <command
+                  commandId="com.eclipsesource.fecs.ui.commands.formatFileCommand"
+                  id="com.eclipsesource.fecs.ui.menus.formatFileCommand"
+                  mnemonic="S">
+            </command>
+            <command
+                  commandId="com.eclipsesource.fecs.ui.commands.formatAllFilesCommand"
+                  id="com.eclipsesource.fecs.ui.commands.formatAllFilesCommand"
+                  mnemonic="S">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="com.eclipsesource.fecs.ui.toolbars.sampleToolbar">
+            <command
+                  commandId="com.eclipsesource.fecs.ui.commands.formatFileCommand"
+                  icon="icons/sample.gif"
+                  id="com.eclipsesource.fecs.ui.toolbars.formatFileCommand"
+                  tooltip="Format this file">
+            </command>
+            <!-- 好像要自己继承类，然后实现下拉菜单
+            <control
+                  class="org.eclipse.ui.examples.contributions.ExampleControlContribution"
+                  id="contributions.controlContrib1">
+            </control>
+            -->
+			<command
+                  commandId="com.eclipsesource.fecs.ui.commands.formatAllFilesCommand"
+                  icon="icons/sample.gif"
+                  id="com.eclipsesource.fecs.ui.toolbars.formatAllFilesCommand"
+                  tooltip="Format all files">
+            </command>
+            
+      	  </toolbar>
+      </menuContribution>
+   </extension>
 
 </plugin>
