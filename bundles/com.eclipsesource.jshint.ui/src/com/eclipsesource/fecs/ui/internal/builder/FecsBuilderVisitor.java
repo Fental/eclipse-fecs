@@ -58,7 +58,7 @@ class FecsBuilderVisitor implements IResourceVisitor, IResourceDeltaVisitor {
 		Preferences node = PreferencesFactory.getProjectPreferences(project);
 		new EnablementPreferences(node);
 		selector = new ResourceSelector(project);
-		fecs = selector.allowVisitProject() ? new Fecs() : null;
+		fecs = selector.allowVisitProject() ? createFecs(project) : null;
 		this.monitor = monitor;
 	}
 
@@ -83,6 +83,10 @@ class FecsBuilderVisitor implements IResourceVisitor, IResourceDeltaVisitor {
 		return descend;
 	}
 
+	private Fecs createFecs(IProject project) throws CoreException {
+		System.out.println( new ConfigLoader( project ).getConfiguration() );
+		return new Fecs();
+	}
 	// private JSHint createJSHint( IProject project ) throws CoreException {
 	// JSHint jshint = new JSHint();
 	// try {

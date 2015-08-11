@@ -47,7 +47,7 @@ import com.eclipsesource.fecs.internal.ProblemImpl;
 //						 debug——no
 //						 format--no		内置--format json
 //						 ignore——no		通过property page设置过滤
-//						 lookup——...	待考核
+//						 lookup——no		用来决定是否允许读取.fecsrc文件，合并默认配置
 //						 maxerr——yes
 //						 maxsize——yes
 //						 reporter——no	内置——baidu
@@ -59,14 +59,19 @@ import com.eclipsesource.fecs.internal.ProblemImpl;
 //   format的cli options 有debug——no
 //						  format——no
 //						  ignore——no	通过property page设置过滤
-//						  lookup——..	待考核
+//						  lookup——no	用来决定是否允许读取.fecsrc文件，合并默认配置
 //						  output——no	不能选中output路径
 //   					  replace——no	内置
 //						  safe——yes
 //						  silent——no	
 //						  stream——no
 //						  type——no
-// 综上，需要的options最多只有五个。。。。
+
+// 综上，需要修改的options只有三个。。。。
+
+// 想到一个很刺激的方法，就是通过properties的配置创建.fecsrc文件...结果这个插件居然就是这么干的。。。
+// preference 的话，配置则为每个项目创建.fecsrc，内容默认为.fecsrc的内容
+// eclipse获得的PATH与shell的PATH不一样
 
 //						  
 // => =.=
@@ -85,6 +90,7 @@ public class Fecs {
 				"/bin/zsh",
 				"-c",
 				"/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs "
+//				"fecs "
 				+ text
 				+ " --reporter baidu --rule true --sort true --silent true --format json"
 			};
@@ -105,8 +111,13 @@ public class Fecs {
 				result += line;
 			}
 
-			// 
-			handleProblems(handler, code, result);
+			// 检查失败则result没有变化，仍是""
+			if (result != "") {
+				handleProblems(handler, code, result);	
+			}
+			
+			// 如果没有错误，result是[]
+			System.out.println(result);
 			return result;
 
 		} catch (IOException e) {
@@ -183,8 +194,13 @@ public class Fecs {
 			IPath path = resource.getRawLocation();
 			String text = "";
 			text += path;
-			String[] command = new String[] { "/bin/zsh", "-c",
-					"/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs format " + text + " --replace true" };
+			String[] command = new String[] { "/bin/zsh",
+				"-c",
+//				"/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs format "
+				"format "
+				+ text
+				+ " --replace true"
+			};
 			// String[] command = new String[]{"/bin/zsh", "-c", "which npm"};
 			Process process = Runtime.getRuntime().exec(command);
 			process.waitFor();

@@ -12,6 +12,7 @@ package com.eclipsesource.fecs.ui.internal.builder;
 
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
 // 参考链接http://help.eclipse.org/juno/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Freference%2Fextension-points%2Forg_eclipse_core_resources_builders.html
 // 接口
 import org.eclipse.core.resources.IProject;
@@ -19,7 +20,7 @@ import org.eclipse.core.resources.IResourceDelta;
 // import org.eclipse.core.resources.IResourceDeltaVisitor;
 // all incremental project builders 的抽象基类，想要写builder就得继承它
 import org.eclipse.core.resources.IncrementalProjectBuilder;
-
+import org.eclipse.core.resources.ProjectScope;
 // core error
 import org.eclipse.core.runtime.CoreException;
 //import org.eclipse.core.runtime.IPath;
@@ -27,8 +28,10 @@ import org.eclipse.core.runtime.CoreException;
 // 功能：这个接口被对象实现，用来监测progress of an activity
 import org.eclipse.core.runtime.IProgressMonitor;
 import com.eclipsesource.fecs.ui.internal.Activator;
+import com.eclipsesource.fecs.ui.internal.preferences.OptionsPreferences;
 
 //import com.eclipsesource.jshint.ui.internal.builder.Checker;
+import static com.eclipsesource.fecs.ui.internal.util.IOUtil.writeFileUtf8;
 
 // Builder类继承抽象基类
 public class FecsBuilder extends IncrementalProjectBuilder {
@@ -55,6 +58,7 @@ public class FecsBuilder extends IncrementalProjectBuilder {
 
 	// 供构建器更新用户的进度监视器。该监视器控制一个进度条和一个停止按钮。由于构建过程可能会很慢，因此构建器应该测试用户是否已取消了该操作。
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
+		checkFecsrc(getProject());
 		if (kind == IncrementalProjectBuilder.FULL_BUILD) {
 			fullBuild(monitor);
 		} else {
@@ -105,6 +109,29 @@ public class FecsBuilder extends IncrementalProjectBuilder {
 		getProject().accept(new FecsBuilderVisitor(project, monitor));
 	}
 
+	private void checkFecsrc(IProject project) {
+		// 获取首选项先
+		OptionsPreferences prefs = new OptionsPreferences(
+			new ProjectScope(project).getNode(Activator.PLUGIN_ID)
+		);
+		
+		// 配置文件
+		IFile config = project.getFile(".fecsrc");
+		// TODO 判断是否要写.fecsrc
+		if (config.exists() && prefs.getProjectSpecific() == true) {
+			return;
+		}
+		else {
+			// 使用首选项的配置，写至.fecsrc中
+			try {
+				writeFileUtf8(config, prefs.getConfig());
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		// TODO
