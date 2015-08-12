@@ -84,7 +84,7 @@ class FecsBuilderVisitor implements IResourceVisitor, IResourceDeltaVisitor {
 	}
 
 	private Fecs createFecs(IProject project) throws CoreException {
-		System.out.println( new ConfigLoader( project ).getConfiguration() );
+//		System.out.println( new ConfigLoader( project ).getConfiguration() );
 		return new Fecs();
 	}
 	// private JSHint createJSHint( IProject project ) throws CoreException {

@@ -27,6 +27,8 @@ import org.eclipse.core.runtime.CoreException;
 // 接口
 // 功能：这个接口被对象实现，用来监测progress of an activity
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+
 import com.eclipsesource.fecs.ui.internal.Activator;
 import com.eclipsesource.fecs.ui.internal.preferences.OptionsPreferences;
 
@@ -58,18 +60,21 @@ public class FecsBuilder extends IncrementalProjectBuilder {
 
 	// 供构建器更新用户的进度监视器。该监视器控制一个进度条和一个停止按钮。由于构建过程可能会很慢，因此构建器应该测试用户是否已取消了该操作。
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
-		checkFecsrc(getProject());
 		if (kind == IncrementalProjectBuilder.FULL_BUILD) {
+			System.out.println("full build");
+			checkFecsrc(getProject());
 			fullBuild(monitor);
 		} else {
 			// getProject()获得绑定了当前builder的project
 			// 获取增量
 			// 平台通过IResourceDelta接口报告这些更改，构建器通过调用getDelta()方法来检索IResourceDelta的实例
+
 			IResourceDelta delta = getDelta(getProject());
 			if (delta == null) {
 				fullBuild(monitor);
 			} else {
 				// 增量构建
+				System.out.println("incremental build");
 				incrementalBuild(delta, monitor);
 			}
 		}
@@ -77,33 +82,12 @@ public class FecsBuilder extends IncrementalProjectBuilder {
 	}
 
 	private void incrementalBuild(IResourceDelta delta, IProgressMonitor monitor) throws CoreException {
-//		// 进行编辑器内容获取测试
-//		Display.getDefault().asyncExec(new Runnable() {
-//		    public void run() {
-//				//取得工作台
-//				IWorkbench workbench = PlatformUI.getWorkbench();
-//				//取得工作台窗口
-//				IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-//				//取得工作台页面
-//				IWorkbenchPage page = window.getActivePage();
-//				//取得当前处于活动状态的编辑器窗口
-//				IEditorPart part = page.getActiveEditor();		        
-//
-//				System.out.println(part.getEditorInput());
-//		    }
-//		});
-//		
-		
+
 		delta.accept(new FecsBuilderVisitor(getProject(), monitor));
-		
-		// System.out.println("incremental build on " + delta);
-		// IResourceDelta delta
-		// 访问者模式
-		// 该数据结构接受visitor对象，并对数据结构中的每一项调用其visit()方法，IResourceDelta对每个文件更改调用visit()
+
 	}
 
 	private void fullBuild(IProgressMonitor monitor) throws CoreException {
-		System.out.println("full build");
 		IProject project = getProject();
 		// IProject 的accept方法
 		getProject().accept(new FecsBuilderVisitor(project, monitor));
@@ -111,19 +95,23 @@ public class FecsBuilder extends IncrementalProjectBuilder {
 
 	private void checkFecsrc(IProject project) {
 		// 获取首选项先
-		OptionsPreferences prefs = new OptionsPreferences(
-			new ProjectScope(project).getNode(Activator.PLUGIN_ID)
-		);
-		
+		OptionsPreferences pref = new OptionsPreferences(new ProjectScope(project).getNode(Activator.PLUGIN_ID));
+
+		OptionsPreferences prefs = new OptionsPreferences(new InstanceScope().getNode(Activator.PLUGIN_ID));
+
 		// 配置文件
 		IFile config = project.getFile(".fecsrc");
+		System.out.println(pref.getProjectSpecific());
+		System.out.println(prefs.getConfig());
+
 		// TODO 判断是否要写.fecsrc
-		if (config.exists() && prefs.getProjectSpecific() == true) {
+		if (config.exists() && pref.getProjectSpecific() == true) {
+			System.out.println("perference没有重写.fecsrc");
 			return;
-		}
-		else {
+		} else {
 			// 使用首选项的配置，写至.fecsrc中
 			try {
+				System.out.println("perference重写.fecsrc");
 				writeFileUtf8(config, prefs.getConfig());
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block
@@ -131,7 +119,7 @@ public class FecsBuilder extends IncrementalProjectBuilder {
 			}
 		}
 	}
-	
+
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		// TODO

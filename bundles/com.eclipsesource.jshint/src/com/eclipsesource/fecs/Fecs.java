@@ -26,6 +26,7 @@ import com.eclipsesource.fecs.internal.ProblemImpl;
 
 // 这个类应该叫做Fecs比较合适一些
 // 包含的函数：check，format，parseConfig
+
 // 现在实现了check，format
 
 // 继续改进的地方：
@@ -69,11 +70,15 @@ import com.eclipsesource.fecs.internal.ProblemImpl;
 
 // 综上，需要修改的options只有三个。。。。
 
+// =>
+
 // 想到一个很刺激的方法，就是通过properties的配置创建.fecsrc文件...结果这个插件居然就是这么干的。。。
 // preference 的话，配置则为每个项目创建.fecsrc，内容默认为.fecsrc的内容
-// eclipse获得的PATH与shell的PATH不一样
 
-//						  
+// eclipse获得的PATH与shell的PATH不一样
+// 通过命令行打开。。。我也是醉
+
+// 怎么导出插件包
 // => =.=
 
 public class Fecs {
@@ -83,27 +88,22 @@ public class Fecs {
 			IPath path = resource.getRawLocation();
 			String text = "";
 			text += path;
-			
+
 			// TODO
 			// 命令行，这里存在一个问题需要修复，就是bin fecs的脚本路径
-			String[] command = new String[] {
-				"/bin/zsh",
-				"-c",
-				"/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs "
-//				"fecs "
-				+ text
-				+ " --reporter baidu --rule true --sort true --silent true --format json"
-			};
-			
+			String[] command = new String[] { "/bin/zsh", "-c",
+					"/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs "
+							// "fecs "
+							+ text + " --reporter baidu --rule true --sort true --silent true --format json" };
+
 			// 执行命令行
 			Process process = Runtime.getRuntime().exec(command);
 			process.waitFor();
-			
+
 			// 获取控制台输出
 			BufferedReader br = new BufferedReader(
-				new InputStreamReader(process.getInputStream(), Charset.forName("utf-8"))
-			);
-			
+					new InputStreamReader(process.getInputStream(), Charset.forName("utf-8")));
+
 			// 将输出存入result中
 			String result = "";
 			String line = null;
@@ -113,11 +113,11 @@ public class Fecs {
 
 			// 检查失败则result没有变化，仍是""
 			if (result != "") {
-				handleProblems(handler, code, result);	
+				handleProblems(handler, code, result);
 			}
-			
+
 			// 如果没有错误，result是[]
-			System.out.println(result);
+			// System.out.println(result);
 			return result;
 
 		} catch (IOException e) {
@@ -194,20 +194,18 @@ public class Fecs {
 			IPath path = resource.getRawLocation();
 			String text = "";
 			text += path;
-			String[] command = new String[] { "/bin/zsh",
-				"-c",
-//				"/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs format "
-				"format "
-				+ text
-				+ " --replace true"
-			};
+			String[] command = new String[] { "/bin/zsh", "-c",
+					"/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs format "
+							// "format "
+							+ text + " --replace true" };
 			// String[] command = new String[]{"/bin/zsh", "-c", "which npm"};
 			Process process = Runtime.getRuntime().exec(command);
 			process.waitFor();
 
 			// 强制editor刷新文件
 			try {
-				resource.refreshLocal(resource.DEPTH_ONE, monitor);
+				// resource.DEPTH_ONE == 1
+				resource.refreshLocal(1, monitor);
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}

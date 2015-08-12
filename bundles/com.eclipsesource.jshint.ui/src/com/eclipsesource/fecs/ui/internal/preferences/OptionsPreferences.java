@@ -63,11 +63,11 @@ public class OptionsPreferences {
 		}
 	}
 
-	public String getConfig() {
+	public String getCurrentConfig() {
 		// KEY_CONFIG "config"
 		// get(key, def) 返回key的值，若不存在则返回def
-		String config = node.get(KEY_CONFIG, null);
-		return config != null ? config : getOldConfig();
+		String config = node.get(KEY_CURRENT_CONFIG, DEFAULT_CONFIG);
+		return config;
 	}
 
 	private String getOldConfig() {
@@ -76,7 +76,21 @@ public class OptionsPreferences {
 		// =.=
 		return prettyPrint(OptionParserUtil.createConfiguration(options, globals));
 	}
+	
+	public void setCurrentConfig(String value) {
+		// 设置config选项的值
+		if (!value.equals(node.get(KEY_CURRENT_CONFIG, DEFAULT_CONFIG))) {
+			node.put(KEY_CURRENT_CONFIG, value);
+		}
+	}
 
+	public String getConfig() {
+		// KEY_CONFIG "config"
+		// get(key, def) 返回key的值，若不存在则返回def
+		String config = node.get(KEY_CONFIG, DEFAULT_CONFIG);
+		return config != null ? config : getOldConfig();
+	}
+	
 	public void setConfig(String value) {
 		// 设置config选项的值
 		if (!value.equals(node.get(KEY_CONFIG, null))) {

@@ -66,8 +66,6 @@ import com.eclipsesource.fecs.ui.internal.util.JsonUtil;
 //			网格布局（GridLayout）
 //			表单布局（FormLayout）
 
-
-
 //经常要使用两个组合控件以及多种布局。
 
 // 1 【Group 组】，这个组可以为我们生成一个带有线的框，这样可以把杂乱的控件放到一个规整的容器内。
@@ -89,19 +87,19 @@ public class ConfigPropertyPage extends AbstractPropertyPage {
 	protected Control createContents(Composite parent) {
 		// 复合部件
 		Composite composite = new Composite(parent, SWT.NONE);
-		
+
 		// checkbox，是否使能项目特定的配置项
 		Control projectSpecificPart = createProjectSpecificPart(composite);
-		
+
 		// 创建label
 		Control labelPart = createLabelPart(composite);
-		
+
 		// jshint插件作者自己弄的editor
 		Control configTextPart = createConfigTextPart(composite);
-		
+
 		// import export按钮
 		Control buttonsPart = createButtonsPart(composite);
-		
+
 		// 布局
 		gridData(composite).fillBoth();
 		gridLayout(composite).columns(2).spacing(3);
@@ -109,8 +107,7 @@ public class ConfigPropertyPage extends AbstractPropertyPage {
 		gridData(labelPart).span(2, 1).fillHorizontal().widthHint(360);
 		gridData(configTextPart).fillBoth().sizeHint(360, 180);
 		gridData(buttonsPart).align(SWT.BEGINNING, SWT.BEGINNING);
-		
-		
+
 		loadPreferences();
 		return composite;
 	}
@@ -166,7 +163,6 @@ public class ConfigPropertyPage extends AbstractPropertyPage {
 		return buttonBar;
 	}
 
-	
 	// 恢复默认设置
 	@Override
 	protected void performDefaults() {
@@ -182,6 +178,7 @@ public class ConfigPropertyPage extends AbstractPropertyPage {
 		try {
 			// checkbox是否改变了首选项状态
 			boolean prefsChanged = storePrefs();
+
 			// editor中的配置是否更改
 			boolean configChanged = projectSpecificCheckbox.getSelection() && storeConfig();
 			if (prefsChanged || configChanged) {
@@ -212,39 +209,52 @@ public class ConfigPropertyPage extends AbstractPropertyPage {
 	private void loadPreferences() {
 		// 获取首选项的配置参数
 		OptionsPreferences prefs = new OptionsPreferences(getPreferences());
-		
+
 		// 读取checkbox的状态
 		projectSpecificCheckbox.setSelection(prefs.getProjectSpecific());
 		// TODO 配置文件中的内容不是最新的，应该从node中获取
 		// 读配置文件
-		origConfig = readConfigFile();
+		// origConfig = readConfigFile();
+		origConfig = prefs.getCurrentConfig();
 		
-		
-		configEditor.setText(origConfig != null ? origConfig : getDefaultConfig());
+		// configEditor.setText(origConfig != null ? origConfig :
+		// getDefaultConfig());
+		configEditor.setText(origConfig);
+
 		configEditor.setEnabled(prefs.getProjectSpecific());
 	}
 
 	private boolean storePrefs() throws CoreException {
 		// 获取当前项目的首选项
 		OptionsPreferences prefs = new OptionsPreferences(getPreferences());
-		
+
 		// 设置首选项的项目指定配置的key，默认是不存在的，如果value为true，则改变，false则返回
 		prefs.setProjectSpecific(projectSpecificCheckbox.getSelection());
+
+		prefs.setCurrentConfig(configEditor.getText());
+
 		// 标记当前项目的首选项发生改变
 		boolean changed = prefs.hasChanged();
-		if (changed) {
-			// 保存并强刷
-			savePreferences();
-		}
+		// if (changed) {
+		// 保存并强刷
+		savePreferences();
+		// }
 		return changed;
 	}
 
 	private boolean storeConfig() throws CoreException {
 		// editor中的内容是否与.fecsrc的文件一致
 		String config = configEditor.getText();
-		boolean jsonChanged = !JsonUtil.jsonEquals(config, origConfig);
+		String fecsrc = readConfigFile();
+		boolean jsonChanged;
+		if (fecsrc == null) {
+			jsonChanged = true;
+		} else {
+			jsonChanged = !JsonUtil.jsonEquals(config, fecsrc);
+		}
+		System.out.println("property 重写.fecsrc");
 		writeConfigFile(config);
-		origConfig = config;
+//		origConfig = config;
 		// 同时将副本
 		return jsonChanged;
 	}
@@ -282,8 +292,8 @@ public class ConfigPropertyPage extends AbstractPropertyPage {
 	private String getDefaultConfig() {
 		return new OptionsPreferences(getPreferences()).getConfig();
 	}
-	
-//	private String 
+
+	// private String
 
 	private void triggerRebuild() throws CoreException {
 		IProject project = getResource().getProject();

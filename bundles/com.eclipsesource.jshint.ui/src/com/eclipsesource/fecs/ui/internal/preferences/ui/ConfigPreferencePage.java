@@ -136,7 +136,7 @@ public class ConfigPreferencePage extends PreferencePage implements IWorkbenchPr
 	public boolean performOk() {
 		try {
 			storePreferences();
-			
+
 			if (!jsonEquals(configEditor.getText(), origConfig)) {
 				triggerRebuild();
 			}
@@ -153,10 +153,10 @@ public class ConfigPreferencePage extends PreferencePage implements IWorkbenchPr
 	private void storePreferences() throws CoreException {
 		// 首选项参数的自定义类
 		OptionsPreferences optionsPreferences = new OptionsPreferences(getPreferences());
-		
+
 		// 保存首选项的配置，根据内容是否变化更改内部flag
 		optionsPreferences.setConfig(configEditor.getText());
-		
+
 		// 内容改变了则保存首选项
 		if (optionsPreferences.hasChanged()) {
 			savePreferences();
@@ -169,7 +169,8 @@ public class ConfigPreferencePage extends PreferencePage implements IWorkbenchPr
 		Preferences node = getPreferences();
 		try {
 			// 强制刷新
-			// Forces any changes in the contents of this node and its descendants to the persistent store
+			// Forces any changes in the contents of this node and its
+			// descendants to the persistent store
 			node.flush();
 		} catch (BackingStoreException exception) {
 			String message = "Failed to store preferences";
@@ -178,7 +179,7 @@ public class ConfigPreferencePage extends PreferencePage implements IWorkbenchPr
 		}
 	}
 
-	// 激活每个项目的构建器
+	// 激活每个项目的构建器 rebuild其实就是CLEAN_BUILD：clean任务 + FULL_BUILD
 	private void triggerRebuild() throws CoreException {
 		for (IProject project : getProjects()) {
 			if (project.isAccessible()) {
