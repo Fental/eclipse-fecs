@@ -98,7 +98,7 @@ public class FecsPreferencePage extends PreferencePage implements IWorkbenchPref
 		try {
 			System.out.println("是否改变首选项");
 			System.out.println(preferences.hasChanged());
-			
+
 			if (preferences.hasChanged()) {
 				preferences.save();
 				triggerRebuild();
@@ -130,14 +130,6 @@ public class FecsPreferencePage extends PreferencePage implements IWorkbenchPref
 
 		// 布局
 		gridData(defaultLibRadio).fillHorizontal().span(3, 1);
-
-//		// 为选择node bin的radio按钮添加监听事件
-//		defaultLibRadio.addListener(SWT.Selection, new Listener() {
-//			public void handleEvent(Event event) {
-////				preferences.setUseCustomLib(customLibRadio.getSelection());
-//				validate();
-//			}
-//		});
 
 		// 选中即可选择node bin路径
 		customLibRadio = new Button(parent, SWT.RADIO);
@@ -258,53 +250,54 @@ public class FecsPreferencePage extends PreferencePage implements IWorkbenchPref
 		validator.schedule();
 	}
 
-//	private void validatePrefs() {
-//		if (preferences.getUseCustomLib()) {
-//			String path = preferences.getCustomLibPath();
-//			validateFile(new File(path));
-//		}
-//	}
-//	
-	
-//	private static void validateFile(File file) throws IllegalArgumentException {
-//		if (!file.isFile()) {
-//			throw new IllegalArgumentException("File does not exist");
-//		}
-//		if (!file.canRead()) {
-//			throw new IllegalArgumentException("File is not readable");
-//		}
-//		try {
-//			FileInputStream inputStream = new FileInputStream(file);
-//			try {
-//				JSHint jsHint = new JSHint();
-//				jsHint.load(inputStream);
-//			} finally {
-//				inputStream.close();
-//			}
-//		} catch (Exception exception) {
-//			throw new IllegalArgumentException("File is not a valid JSHint library", exception);
-//		}
-//	}
+	// private void validatePrefs() {
+	// if (preferences.getUseCustomLib()) {
+	// String path = preferences.getCustomLibPath();
+	// validateFile(new File(path));
+	// }
+	// }
+	//
+
+	// private static void validateFile(File file) throws
+	// IllegalArgumentException {
+	// if (!file.isFile()) {
+	// throw new IllegalArgumentException("File does not exist");
+	// }
+	// if (!file.canRead()) {
+	// throw new IllegalArgumentException("File is not readable");
+	// }
+	// try {
+	// FileInputStream inputStream = new FileInputStream(file);
+	// try {
+	// JSHint jsHint = new JSHint();
+	// jsHint.load(inputStream);
+	// } finally {
+	// inputStream.close();
+	// }
+	// } catch (Exception exception) {
+	// throw new IllegalArgumentException("File is not a valid JSHint library",
+	// exception);
+	// }
+	// }
 
 	// #1
-	
+
 	private void validatePrefs() {
 		if (preferences.getUseCustomLib()) {
 			String dir = preferences.getCustomNodeDir();
 			validateDir(dir);
-		}
-		else {
+		} else {
 			validateDir("");
 		}
 	}
-	
+
 	private static void validateDir(String dir) {
 		try {
-			String[] command;
+			String command;
 			if (dir.equalsIgnoreCase("") || dir.equalsIgnoreCase("/")) {
-				command = new String[] { "/bin/sh", "-c", dir + "fecs -v" };
+				command = dir + "node -v";
 			} else {
-				command = new String[] { "/bin/sh", "-c", dir + "/fecs -v" };
+				command = dir + "/node -v";
 			}
 
 			Process process = Runtime.getRuntime().exec(command);
@@ -327,7 +320,7 @@ public class FecsPreferencePage extends PreferencePage implements IWorkbenchPref
 				throw new IllegalArgumentException("Directory is not a valid interpreter Directort");
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new IllegalArgumentException("Directory is not a valid interpreter Directort");
 		}
 	}
 

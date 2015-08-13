@@ -99,13 +99,9 @@ public class Fecs {
 			String text = "";
 			text += path;
 			// TODO
-			// 命令行，这里存在一个问题需要修复，就是bin fecs的脚本路径
-//			String[] command = new String[] { "/bin/zsh", "-c",
-//					// "/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs
-//					// "
-//					bin + "fecs " + text + " --reporter baidu --rule true --sort true --silent true --format json" };
-
-			String command = bin + "fecs " + text + " --reporter baidu --rule true --sort true --silent true --format json";
+			String command = bin + "node " + bin + "fecs " + text + " --reporter baidu --rule true --sort true --silent true --format json";
+			System.out.println(command);
+//			String command = bin + "fecs " + text + " --reporter baidu --rule true --sort true --silent true --format json";
 			// 执行命令行
 			Process process = Runtime.getRuntime().exec(command);
 			process.waitFor();
@@ -131,9 +127,8 @@ public class Fecs {
 			return result;
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	private void handleProblems(ProblemHandler handler, Text text, String result) {
@@ -208,7 +203,7 @@ public class Fecs {
 //					// "/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs
 //					// format "
 //					bin + "fecs format " + text + " --replace true" };
-			String command = bin + "fecs format " + text + " --replace true";
+			String command = bin + "node " + bin + "fecs format " + text + " --replace true";
 			// String[] command = new String[]{"/bin/zsh", "-c", "which npm"};
 			System.out.println("在Fecs中dir:"+bin);
 			Process process = Runtime.getRuntime().exec(command);
@@ -222,7 +217,7 @@ public class Fecs {
 				e.printStackTrace();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			return null;
 		}
 		return null;
 	}
