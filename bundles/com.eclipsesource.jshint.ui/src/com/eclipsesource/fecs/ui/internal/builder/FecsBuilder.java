@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 
 import com.eclipsesource.fecs.ui.internal.Activator;
 import com.eclipsesource.fecs.ui.internal.preferences.OptionsPreferences;
+import com.eclipsesource.fecs.ui.internal.util.JsonUtil;
 
 //import com.eclipsesource.jshint.ui.internal.builder.Checker;
 import static com.eclipsesource.fecs.ui.internal.util.IOUtil.writeFileUtf8;
@@ -97,15 +98,29 @@ public class FecsBuilder extends IncrementalProjectBuilder {
 		// 获取首选项先
 		OptionsPreferences pref = new OptionsPreferences(new ProjectScope(project).getNode(Activator.PLUGIN_ID));
 
+		@SuppressWarnings("deprecation")
 		OptionsPreferences prefs = new OptionsPreferences(new InstanceScope().getNode(Activator.PLUGIN_ID));
 
 		// 配置文件
 		IFile config = project.getFile(".fecsrc");
-		System.out.println(pref.getProjectSpecific());
+		
+		System.out.println(pref.getFileConfig());
 		System.out.println(prefs.getConfig());
 
 		// TODO 判断是否要写.fecsrc
-		if (config.exists() && pref.getProjectSpecific() == true) {
+		if (config.exists()
+			&& (pref.getProjectSpecific() == true || JsonUtil.jsonEquals(prefs.getConfig(), pref.getFileConfig()))) {
+//			System.out.println();
+//			System.out.println(config.exists() && pref.getProjectSpecific() == true);
+//			System.out.println(config.exists());
+//			try {
+//				System.out.println(config.getCharset());
+//			} catch (CoreException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			System.out.println(pref.getProjectSpecific());
+//			System.out.println(JsonUtil.jsonEquals(prefs.getConfig(), pref.getFileConfig()));
 			System.out.println("perference没有重写.fecsrc");
 			return;
 		} else {
@@ -113,6 +128,9 @@ public class FecsBuilder extends IncrementalProjectBuilder {
 			try {
 				System.out.println("perference重写.fecsrc");
 				writeFileUtf8(config, prefs.getConfig());
+				
+				System.out.println("per与文件内容是否相等：");
+				System.out.println(JsonUtil.jsonEquals(prefs.getConfig(), pref.getFileConfig()));
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -23,8 +23,13 @@ public class OptionsPreferences {
 	
 	private static final String KEY_CONFIG = "config";
 	
-	// 用于存放property的东东
+	// 用于存放项目property编辑框里的内容
 	private static final String KEY_CURRENT_CONFIG = "currentConfig";
+	
+	// 用于存放项目.fecsrc文件里的内容
+	private static final String KEY_FILE_CONFIG = "fileConfig";
+	
+	private static final String KEY_IMPORT = "import";
 
 	public static final boolean DEFAULT_PROJ_SPECIFIC = false;
 	// TODO set sensible default config
@@ -63,18 +68,20 @@ public class OptionsPreferences {
 		}
 	}
 
+	public void setImport(boolean value) {
+		node.putBoolean(KEY_IMPORT, value);
+	}
+	
+	public boolean getImport() {
+		boolean config = node.getBoolean(KEY_IMPORT, false);
+		return config;
+	}
+	
 	public String getCurrentConfig() {
 		// KEY_CONFIG "config"
 		// get(key, def) 返回key的值，若不存在则返回def
 		String config = node.get(KEY_CURRENT_CONFIG, DEFAULT_CONFIG);
 		return config;
-	}
-
-	private String getOldConfig() {
-		String options = node.get(KEY_OPTIONS, "");
-		String globals = node.get(KEY_GLOBALS, "");
-		// =.=
-		return prettyPrint(OptionParserUtil.createConfiguration(options, globals));
 	}
 	
 	public void setCurrentConfig(String value) {
@@ -83,7 +90,28 @@ public class OptionsPreferences {
 			node.put(KEY_CURRENT_CONFIG, value);
 		}
 	}
+	
+	private String getOldConfig() {
+		String options = node.get(KEY_OPTIONS, "");
+		String globals = node.get(KEY_GLOBALS, "");
+		// =.=
+		return prettyPrint(OptionParserUtil.createConfiguration(options, globals));
+	}
 
+	public String getFileConfig() {
+		// KEY_CONFIG "config"
+		// get(key, def) 返回key的值，若不存在则返回def
+		String config = node.get(KEY_FILE_CONFIG, DEFAULT_CONFIG);
+		return config;
+	}
+	
+	public void setFileConfig(String value) {
+		// 设置config选项的值
+		if (!value.equals(node.get(KEY_FILE_CONFIG, DEFAULT_CONFIG))) {
+			node.put(KEY_FILE_CONFIG, value);
+		}
+	}
+	
 	public String getConfig() {
 		// KEY_CONFIG "config"
 		// get(key, def) 返回key的值，若不存在则返回def

@@ -244,6 +244,8 @@ public class ConfigPropertyPage extends AbstractPropertyPage {
 
 	private boolean storeConfig() throws CoreException {
 		// editor中的内容是否与.fecsrc的文件一致
+		OptionsPreferences prefs = new OptionsPreferences(getPreferences());
+		
 		String config = configEditor.getText();
 		String fecsrc = readConfigFile();
 		boolean jsonChanged;
@@ -253,7 +255,11 @@ public class ConfigPropertyPage extends AbstractPropertyPage {
 			jsonChanged = !JsonUtil.jsonEquals(config, fecsrc);
 		}
 		System.out.println("property 重写.fecsrc");
+		
 		writeConfigFile(config);
+		prefs.setFileConfig(config);
+		prefs.getFileConfig();
+		
 //		origConfig = config;
 		// 同时将副本
 		return jsonChanged;
@@ -289,9 +295,9 @@ public class ConfigPropertyPage extends AbstractPropertyPage {
 	}
 
 	// 获取首选项的配置内容
-	private String getDefaultConfig() {
-		return new OptionsPreferences(getPreferences()).getConfig();
-	}
+//	private String getDefaultConfig() {
+//		return new OptionsPreferences(getPreferences()).getConfig();
+//	}
 
 	// private String
 

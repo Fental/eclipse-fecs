@@ -76,7 +76,7 @@ public class IncludesView extends Composite {
 
   private void createIncludeControls() {
     Label label = new Label( this, SWT.NONE );
-    label.setText( "Enable JSHint for these files and folders:" );
+    label.setText( "Enable FECS for these files and folders:" );
     gridData( label ).span( 2, 1 );
     includeTable = new Table( this, SWT.BORDER );
     gridData( includeTable ).fillBoth();

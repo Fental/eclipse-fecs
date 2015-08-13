@@ -81,21 +81,31 @@ import com.eclipsesource.fecs.internal.ProblemImpl;
 // 怎么导出插件包
 // => =.=
 
+// 改进，FECS全部大写
+// 将上面的options绝大部分弄成可配置 => 修改preference页
+// 
+
 public class Fecs {
+	private final String bin;
+
+	public Fecs(String bin) {
+		this.bin = bin;
+	}
+
 	public String check(IFile resource, Text code, ProblemHandler handler) throws InterruptedException {
 		try {
 			// 获取文件的路径
 			IPath path = resource.getRawLocation();
 			String text = "";
 			text += path;
-
 			// TODO
 			// 命令行，这里存在一个问题需要修复，就是bin fecs的脚本路径
-			String[] command = new String[] { "/bin/zsh", "-c",
-					"/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs "
-							// "fecs "
-							+ text + " --reporter baidu --rule true --sort true --silent true --format json" };
+//			String[] command = new String[] { "/bin/zsh", "-c",
+//					// "/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs
+//					// "
+//					bin + "fecs " + text + " --reporter baidu --rule true --sort true --silent true --format json" };
 
+			String command = bin + "fecs " + text + " --reporter baidu --rule true --sort true --silent true --format json";
 			// 执行命令行
 			Process process = Runtime.getRuntime().exec(command);
 			process.waitFor();
@@ -117,7 +127,7 @@ public class Fecs {
 			}
 
 			// 如果没有错误，result是[]
-			// System.out.println(result);
+			 System.out.println(result);
 			return result;
 
 		} catch (IOException e) {
@@ -194,11 +204,13 @@ public class Fecs {
 			IPath path = resource.getRawLocation();
 			String text = "";
 			text += path;
-			String[] command = new String[] { "/bin/zsh", "-c",
-					"/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs format "
-							// "format "
-							+ text + " --replace true" };
+//			String[] command = new String[] { "/bin/zsh", "-c",
+//					// "/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs
+//					// format "
+//					bin + "fecs format " + text + " --replace true" };
+			String command = bin + "fecs format " + text + " --replace true";
 			// String[] command = new String[]{"/bin/zsh", "-c", "which npm"};
+			System.out.println("在Fecs中dir:"+bin);
 			Process process = Runtime.getRuntime().exec(command);
 			process.waitFor();
 

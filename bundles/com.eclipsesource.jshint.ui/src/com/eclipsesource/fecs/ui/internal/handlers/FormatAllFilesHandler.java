@@ -27,6 +27,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import com.eclipsesource.fecs.Fecs;
+import com.eclipsesource.fecs.ui.internal.preferences.FecsPreferences;
 import com.eclipsesource.fecs.ui.internal.preferences.ResourceSelector;
 
 public class FormatAllFilesHandler extends AbstractHandler {
@@ -62,7 +63,14 @@ public class FormatAllFilesHandler extends AbstractHandler {
 		}
 
 		selector = new ResourceSelector(resource.getProject());
-		fecs = new Fecs();
+
+		try {
+			fecs = createFecs(resource.getProject());
+		} catch (CoreException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		try {
 			if (formatAllFiles(resource)) {
 				MessageDialog.openInformation(window.getShell(), "JSHint Eclipse Integration", "格式化完毕！");
@@ -73,6 +81,20 @@ public class FormatAllFilesHandler extends AbstractHandler {
 		}
 
 		return null;
+	}
+
+	private Fecs createFecs(IProject project) throws CoreException {
+		// System.out.println( new ConfigLoader( project ).getConfiguration() );
+		String dir = "";
+		FecsPreferences preferences = new FecsPreferences();
+		if (preferences.getUseCustomLib()) {
+			dir = preferences.getCustomNodeDir();
+		}
+		if (dir.equalsIgnoreCase("") || dir.equalsIgnoreCase("/")) {
+			return new Fecs(dir);
+		}
+		System.out.println("在format中的dir:" + dir);
+		return new Fecs(dir + "/");
 	}
 
 	// 获取当前选中的内容

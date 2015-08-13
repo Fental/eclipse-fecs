@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: JSHint Eclipse Integration
+Bundle-Name: FECS Eclipse Integration
 Bundle-SymbolicName: com.eclipsesource.fecs.ui;singleton:=true
-Bundle-Version: 0.9.11.qualifier
+Bundle-Version: 0.0.1.qualifier
 Bundle-Activator: com.eclipsesource.fecs.ui.internal.Activator
 Bundle-Vendor: EclipseSource
 Require-Bundle: org.eclipse.ui;bundle-version="3.6.0",

@@ -48,7 +48,7 @@ public class IOUtil {
 		} else {
 			file.create(inputStream, true, null);
 			
-			file.setCharset(UTF_8, null);
+//			file.setCharset(UTF_8, null);
 		}
 	}
 

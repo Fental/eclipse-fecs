@@ -44,7 +44,7 @@ public class ConfigPreferencePage extends PreferencePage implements IWorkbenchPr
 	private String origConfig;
 
 	public ConfigPreferencePage() {
-		setDescription("Fecs 全局配置");
+		setDescription("General configuration for FECS");
 	}
 
 	public void init(IWorkbench workbench) {
@@ -79,7 +79,7 @@ public class ConfigPreferencePage extends PreferencePage implements IWorkbenchPr
 
 	private Control createLabelPart(Composite parent) {
 		Link link = new Link(parent, SWT.WRAP);
-		link.setText("配置Fecs check 和 format CLI 参数，配置可参照：<a>http://www.baidu.com</a>.=。=");
+		link.setText("General .fecsrc file for FECS");
 
 		// 允许打开eclipse的内置浏览器
 		BrowserSupport.INSTANCE.enableHyperlinks(link);

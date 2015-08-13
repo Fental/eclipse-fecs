@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: JSHint
+Bundle-Name: FECS
 Bundle-SymbolicName: com.eclipsesource.fecs
-Bundle-Version: 0.9.11.qualifier
+Bundle-Version: 0.0.1.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: EclipseSource
 Bundle-ActivationPolicy: lazy

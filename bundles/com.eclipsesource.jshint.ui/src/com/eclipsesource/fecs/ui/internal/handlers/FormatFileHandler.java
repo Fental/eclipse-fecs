@@ -5,12 +5,14 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import com.eclipsesource.fecs.Fecs;
+import com.eclipsesource.fecs.ui.internal.preferences.FecsPreferences;
 import com.eclipsesource.fecs.ui.internal.preferences.ResourceSelector;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -61,7 +63,12 @@ public class FormatFileHandler extends AbstractHandler {
 		selector = new ResourceSelector(project);
 
 		// 如果文件没有被过滤，则支持格式化
-		fecs = selector.allowVisitProject() && selector.allowVisitFile(file) ? new Fecs() : null;
+		try {
+			fecs = selector.allowVisitProject() && selector.allowVisitFile(file) ? createFecs(project) : null;
+		} catch (CoreException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		if (fecs == null) {
 			// 如果fecs为null，则不格式化该文件，并提示
@@ -77,4 +84,18 @@ public class FormatFileHandler extends AbstractHandler {
 
 		return null;
 	}
+	private Fecs createFecs(IProject project) throws CoreException {
+//		System.out.println( new ConfigLoader( project ).getConfiguration() );
+		String dir = "";
+		FecsPreferences preferences = new FecsPreferences();
+		if (preferences.getUseCustomLib()) {
+			dir = preferences.getCustomNodeDir();
+		}
+		if (dir.equalsIgnoreCase("") || dir.equalsIgnoreCase("/")) {
+			return new Fecs(dir);
+		}
+		return new Fecs(dir + "/");
+	}
 }
+
+

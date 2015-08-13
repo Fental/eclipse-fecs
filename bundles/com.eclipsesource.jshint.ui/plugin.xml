@@ -7,7 +7,7 @@
       <page
             id="com.eclipsesource.fecs.ui.properties.projectPropertyPage"
             class="com.eclipsesource.fecs.ui.internal.preferences.ui.ProjectPropertyPage"
-            name="Fecs">
+            name="FECS">
          <enabledWhen>
             <adapt
                   type="org.eclipse.core.resources.IResource">
@@ -37,7 +37,7 @@
       <page
             id="com.eclipsesource.fecs.ui.mainPreferencePage"
             class="com.eclipsesource.fecs.ui.internal.preferences.ui.FecsPreferencePage"
-            name="Fecs">
+            name="FECS">
       </page>
       <page
             id="com.eclipsesource.fecs.ui.configPreferencePage"
@@ -48,7 +48,7 @@
    </extension>
    <extension
          id="builder"
-         name="Fecs Problem Checker"
+         name="FECS Problem Checker"
          point="org.eclipse.core.resources.builders">
       <builder
             callOnEmptyDelta="false"
@@ -62,7 +62,7 @@
    </extension>
    <extension
          id="problemmarker"
-         name="Fecs Problem"
+         name="FECS Problem"
          point="org.eclipse.core.resources.markers">
       <persistent
             value="true">
@@ -80,7 +80,7 @@
          point="org.eclipse.ui.commands">
       <category
             id="com.eclipsesource.fecs.ui.commands.category"
-            name="Fecs Formatter">
+            name="FECS Formatter">
       </category>
       <!--格式化单个文件-->
       <command
@@ -126,7 +126,7 @@
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <menu
                id="com.eclipsesource.fecs.ui.menus.sampleMenu"
-               label="Fecs Formatter"
+               label="FECS Formatter"
                mnemonic="M">
             <command
                   commandId="com.eclipsesource.fecs.ui.commands.formatFileCommand"

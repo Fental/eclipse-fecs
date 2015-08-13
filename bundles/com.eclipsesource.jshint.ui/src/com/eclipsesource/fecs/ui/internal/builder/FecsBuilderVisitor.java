@@ -12,9 +12,9 @@ package com.eclipsesource.fecs.ui.internal.builder;
 
 //
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+//import java.io.File;
+//import java.io.FileInputStream;
+//import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -85,7 +85,15 @@ class FecsBuilderVisitor implements IResourceVisitor, IResourceDeltaVisitor {
 
 	private Fecs createFecs(IProject project) throws CoreException {
 //		System.out.println( new ConfigLoader( project ).getConfiguration() );
-		return new Fecs();
+		String dir = "";
+		FecsPreferences preferences = new FecsPreferences();
+		if (preferences.getUseCustomLib()) {
+			dir = preferences.getCustomNodeDir();
+		}
+		if (dir.equalsIgnoreCase("") || dir.equalsIgnoreCase("/")) {
+			return new Fecs(dir);
+		}
+		return new Fecs(dir + "/");
 	}
 	// private JSHint createJSHint( IProject project ) throws CoreException {
 	// JSHint jshint = new JSHint();
