@@ -102,10 +102,15 @@ public class Fecs {
 			String command;
 			if (System.getProperty("os.name").contains("Window")) {
 				command = "fecs.cmd " + text + " --reporter baidu --rule true --sort true --silent true --format json";
+			} else if (System.getProperty("os.name").contains("Mac")) {
+				command = bin + "node " + bin + "fecs " + text
+						+ " --reporter baidu --rule true --sort true --silent true --format json";
+			} else {
+				command = "fecs " + text + " --reporter baidu --rule true --sort true --silent true --format json";
 			}
-			command = bin + "node " + bin + "fecs " + text + " --reporter baidu --rule true --sort true --silent true --format json";
 			System.out.println(command);
-//			String command = bin + "fecs " + text + " --reporter baidu --rule true --sort true --silent true --format json";
+			// String command = bin + "fecs " + text + " --reporter baidu --rule
+			// true --sort true --silent true --format json";
 			// 执行命令行
 			Process process = Runtime.getRuntime().exec(command);
 			process.waitFor();
@@ -127,7 +132,7 @@ public class Fecs {
 			}
 
 			// 如果没有错误，result是[]
-			 System.out.println(result);
+			System.out.println(result);
 			return result;
 
 		} catch (IOException e) {
@@ -203,17 +208,18 @@ public class Fecs {
 			IPath path = resource.getRawLocation();
 			String text = "";
 			text += path;
-//			String[] command = new String[] { "/bin/zsh", "-c",
-//					// "/Users/huangfengtao/.nvm/versions/node/v0.12.7/bin/fecs
-//					// format "
-//					bin + "fecs format " + text + " --replace true" };
+
 			String command;
 			if (System.getProperty("os.name").contains("Window")) {
 				command = "fecs.cmd format " + text + " --replace true";
+			} else if (System.getProperty("os.name").contains("Mac")) {
+				command = bin + "node " + bin + "fecs format " + text + " --replace true";
+			} else {
+				command = "fecs.cmd format " + text + " --replace true";
 			}
-			command = bin + "node " + bin + "fecs format " + text + " --replace true";
+
 			// String[] command = new String[]{"/bin/zsh", "-c", "which npm"};
-			System.out.println("在Fecs中dir:"+bin);
+			System.out.println("在Fecs中dir:" + bin);
 			Process process = Runtime.getRuntime().exec(command);
 			process.waitFor();
 
