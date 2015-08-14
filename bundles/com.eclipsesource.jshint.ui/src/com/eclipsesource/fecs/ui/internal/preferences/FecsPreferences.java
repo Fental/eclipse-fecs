@@ -87,6 +87,7 @@ public class FecsPreferences {
 		return customNodeDir;
 //		try {
 //			readLock.lock();
+		
 //		} finally {
 //			readLock.unlock();
 //		}

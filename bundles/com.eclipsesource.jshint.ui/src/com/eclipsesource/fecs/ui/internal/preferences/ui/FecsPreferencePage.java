@@ -143,7 +143,7 @@ public class FecsPreferencePage extends PreferencePage implements IWorkbenchPref
 			public void handleEvent(Event event) {
 				preferences.setUseCustomLib(customLibRadio.getSelection());
 				validate();
-
+//				validatePrefs();
 				// 让选择目录的按钮使能
 				updateControlsEnabled();
 			}
@@ -157,6 +157,7 @@ public class FecsPreferencePage extends PreferencePage implements IWorkbenchPref
 				preferences.setCustomNodeDir(customLibPathText.getText());
 				// preferences.setCustomLibPath(customLibPathText.getText());
 				validate();
+//				validatePrefs();
 			}
 		});
 
@@ -186,6 +187,7 @@ public class FecsPreferencePage extends PreferencePage implements IWorkbenchPref
 			public void widgetSelected(SelectionEvent e) {
 				preferences.setEnableErrorMarkers(enableErrorsCheckbox.getSelection());
 				validate();
+//				validatePrefs();
 			}
 		});
 	}
@@ -222,7 +224,7 @@ public class FecsPreferencePage extends PreferencePage implements IWorkbenchPref
 
 	private void validate() {
 		setErrorMessage(null);
-		setValid(false);
+		setValid(true);
 		final Display display = getShell().getDisplay();
 		Job validator = new Job("JSHint preferences validation") {
 			@Override
@@ -327,8 +329,8 @@ public class FecsPreferencePage extends PreferencePage implements IWorkbenchPref
 	private void updateControlsFromPrefs() {
 		customLibRadio.setSelection(preferences.getUseCustomLib());
 		defaultLibRadio.setSelection(!customLibRadio.getSelection());
-		System.out.println("fuck");
-		System.out.println(preferences.getCustomNodeDir());
+//		System.out.println("fuck");
+//		System.out.println(preferences.getCustomNodeDir());
 		customLibPathText.setText(preferences.getCustomNodeDir());
 		enableErrorsCheckbox.setSelection(preferences.getEnableErrorMarkers());
 	}
